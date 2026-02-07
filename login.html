@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Login / Registrasi</title>
+  <style>
+    body {font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#004080,#0073e6);display:flex;justify-content:center;align-items:center;height:100vh;margin:0;}
+    .card {background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.2);width:350px;text-align:center;}
+    h2 {color:#004080;margin-bottom:20px;}
+    input {width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:6px;}
+    button {width:100%;padding:12px;background:#004080;color:#fff;border:none;border-radius:6px;font-weight:bold;cursor:pointer;}
+    button:hover {background:#003366;}
+    .switch {margin-top:15px;color:#0073e6;cursor:pointer;}
+  </style>
+</head>
+<body>
+  <div class="card" id="registerCard">
+    <h2>Registrasi</h2>
+    <form action="mailto:gintingdhanie@gmail.com" method="post" enctype="text/plain" onsubmit="return validateRegister()">
+      <input type="text" id="registerID" name="ID" placeholder="Email atau Nomor HP" required>
+      <input type="password" id="registerPassword" name="Password" placeholder="Password" required>
+      <input type="password" id="confirmPassword" placeholder="Konfirmasi Password" required>
+      <button type="submit">Daftar</button>
+    </form>
+    <div class="switch" onclick="showLogin()">Sudah punya akun? Login</div>
+  </div>
+
+  <div class="card" id="loginCard" style="display:none;">
+    <h2>Login</h2>
+    <form onsubmit="login(event)">
+      <input type="text" id="loginID" placeholder="Email atau Nomor HP" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="submit">Masuk</button>
+    </form>
+    <div class="switch" onclick="showRegister()">Belum punya akun? Registrasi</div>
+  </div>
+
+  <script>
+    let users = [];
+
+    function validatePassword(password){
+      return /[A-Z]/.test(password) && /[0-9]/.test(password) && password.length >= 8;
+    }
+
+    function validateRegister(){
+      const id=document.getElementById("registerID").value;
+      const pass=document.getElementById("registerPassword").value;
+      const confirm=document.getElementById("confirmPassword").value;
+      if(pass!==confirm){alert("Konfirmasi password tidak cocok.");return false;}
+      if(!validatePassword(pass)){alert("Password harus minimal 8 karakter, ada huruf kapital dan angka.");return false;}
+      users.push({id,pass});
+      alert("Registrasi berhasil! Data Anda juga dikirim ke email admin.");
+      return true; // form akan kirim ke email
+    }
+
+    function login(event){
+      event.preventDefault();
+      const id=document.getElementById("loginID").value;
+      const pass=document.getElementById("password").value;
+      const user=users.find(u=>u.id===id && u.pass===pass);
+      if(!user){alert("Email/nomor atau password salah.");return;}
+      alert("Login berhasil! Anda akan diarahkan ke halaman pemesanan.");
+      localStorage.setItem("loggedIn",true);
+      window.location.href="pesan.html";
+    }
+
+    function showLogin(){document.getElementById("registerCard").style.display="none";document.getElementById("loginCard").style.display="block";}
+    function showRegister(){document.getElementById("loginCard").style.display="none";document.getElementById("registerCard").style.display="block";}
+  </script>
+</body>
+</html>
