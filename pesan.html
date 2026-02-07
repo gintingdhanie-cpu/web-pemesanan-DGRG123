@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pemesanan Website</title>
+  <style>
+    body {font-family:'Segoe UI',sans-serif;background:#f4f6f9;}
+    section {max-width:600px;margin:20px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+    input,textarea {width:100%;margin-bottom:10px;padding:10px;border:1px solid #ccc;border-radius:6px;}
+    button {padding:10px;background:#004080;color:#fff;border:none;border-radius:6px;}
+    .stars {display:flex;gap:5px;font-size:2em;cursor:pointer;color:#ccc;}
+    .stars .active {color:#FFD700;}
+    table {width:100%;border-collapse:collapse;margin-top:20px;}
+    th,td {border:1px solid #ccc;padding:8px;}
+    th {background:#004080;color:#fff;}
+  </style>
+</head>
+<body>
+  <script>
+    if(!localStorage.getItem("loggedIn")){
+      alert("Anda harus login terlebih dahulu sebelum memesan.");
+      window.location.href="login.html";
+    }
+  </script>
+
+  <section>
+    <h2>Form Pemesanan</h2>
+    <form onsubmit="sendData(event)">
+      <input type="text" id="nama" placeholder="Nama Lengkap" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="text" id="nomor" placeholder="Nomor HP" required>
+      <textarea id="kebutuhan" placeholder="Kebutuhan Website Anda" required></textarea>
+      <button type="submit">Pesan Sekarang</button>
+    </form>
+  </section>
+
+  <section id="rating" style="display:none;">
+    <h2>Beri Penilaian</h2>
+    <div class="stars" id="stars">
+      <span data-value="1">&#9733;</span>
+      <span data-value="2">&#9733;</span>
+      <span data-value="3">&#9733;</span>
+      <span data-value="4">&#9733;</span>
+      <span data-value="5">&#9733;</span>
+    </div>
+    <p id="ratingResult"></p>
+  </section>
+
+  <section id="admin">
+    <h2>Dashboard Admin</h2>
+    <table>
+      <thead><tr><th>Nama</th><th>Email</th><th>Nomor HP</th><th>Kebutuhan</th><th>Rating</th></tr></thead>
+      <tbody id="adminTable"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Kontak</h2>
+    <p>WhatsApp: <a href="https://wa.me/628388679277" target="_blank">08388679277</a></p>
+    <p>Email: gintingdhanie@gmail.com</p>
+    <form action="mailto:gintingdhanie@gmail.com" method="post" enctype="text/plain">
+      <input type="text" name="nama" placeholder="Nama Anda" required>
+      <input type="email" name="email" placeholder="Email Anda" required>
+      <textarea name="pesan" placeholder="Pesan Anda" rows="5" required></textarea>
+      <button type="submit">Kirim ke Email</button>
+    </form>
+    <button onclick="logout()">Logout</button>
+  </section>
+
+  <script>
+    let dataList = [];
+
+    function sendData(event){
+      event.preventDefault();
+      const nama=document.getElementById("nama").value;
+      const email=document.getElementById("email").value;
+      const nomor=document.getElementById("nomor").value;
+      const kebutuhan=document.getElementById("kebutuhan").value;
+      dataList.push({nama,email,nomor,kebutuhan,rating:null});
+      updateAdmin();
+      const url=`https://wa.me/628388679277?text=Halo, saya ${nama} (${email}, ${nomor}). Kebutuhan: ${kebutuhan}`;
+      window.open(url,"_blank");
+      document.getElementById("rating").style.display="block";
+    }
+
+    document.querySelectorAll("#stars span").forEach(star=>{
+      star.addEventListener("click",()=>{
+        const value=star.getAttribute("data-value");
+        document.getElementById("ratingResult").innerText="Anda memberi rating: "+value+" bintang.";
+        dataList[dataList.length-1].rating=value;
+        updateAdmin();
+      });
+    });
+
+    function updateAdmin(){
+      const table=document.getElement
